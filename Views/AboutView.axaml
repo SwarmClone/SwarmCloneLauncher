@@ -2,7 +2,83 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:views="clr-namespace:SwarmCloneLauncher.Views"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
              x:Class="SwarmCloneLauncher.Views.AboutView">
-    Welcome to Avalonia!
+    
+    <UserControl.Styles>
+        <Style Selector="TextBlock">
+            <Setter Property="Foreground" Value="#EEEEEE"/>
+            <Setter Property="FontFamily" Value="Segoe UI, Arial"/>
+        </Style>
+        <Style Selector="Button">
+            <Setter Property="Background" Value="#2E2F2F"/>
+            <Setter Property="Foreground" Value="#EEEEEE"/>
+            <Setter Property="BorderBrush" Value="#444"/>
+            <Setter Property="Padding" Value="12 8"/>
+            <Setter Property="Margin" Value="0 0 8 0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+        <Style Selector="Button:pointerover">
+            <Setter Property="Background" Value="#3E3F3F"/>
+        </Style>
+    </UserControl.Styles>
+
+    <Grid Background="#121212">
+        <ScrollViewer>
+            <StackPanel Margin="20" Spacing="20">
+                <!-- 标题区域 -->
+                <StackPanel HorizontalAlignment="Center" Spacing="10">
+                    <TextBlock Text="{ DynamicResource SoftwareName }" FontSize="24" FontWeight="Bold" 
+                               HorizontalAlignment="Center"/>
+                    <Image Source="/Assets/logo.jpg" Width="100" Height="100" Margin="0 0 0 10"/>
+                    <TextBlock Text="{ DynamicResource SoftwareVersion }" Foreground="#AAAAAA" HorizontalAlignment="Center"/>
+                    <TextBlock Text="完全开源、可高度定制的AI虚拟主播开发框架" 
+                               HorizontalAlignment="Center" TextAlignment="Center" 
+                               Foreground="#CCCCCC" FontSize="14" MaxWidth="400"/>
+                </StackPanel>
+
+                <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" VerticalAlignment="Top">
+                    <!-- 许可证信息 -->
+                    <Border Background="#171717" CornerRadius="8" Padding="15" Margin="0,10,10,0" Grid.Row="1">
+                        <StackPanel Spacing="10">
+                            <TextBlock Text="开源许可证" FontSize="16" FontWeight="Bold"/>
+                            <TextBlock Text="{ DynamicResource License }" 
+                                       Foreground="#4CAF50" FontWeight="SemiBold"/>
+                            <TextBlock Text="本项目采用GPLv3许可证，确保代码保持开源和自由。请尊重开源精神，勿将本项目用于闭源倒卖或其他损害社区利益的行为。" 
+                                       TextWrapping="Wrap" FontSize="13"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- 图标字体许可 -->
+                    <Border Background="#171717" CornerRadius="8" Padding="15" Margin="10,10,0,0" Grid.Row="1" Grid.Column="1">
+                        <StackPanel Spacing="10">
+                            <TextBlock Text="图标许可证" FontSize="16" FontWeight="Bold"/>
+                            <TextBlock Text="Material Design Icons" 
+                                       Foreground="#4CAF50" FontWeight="SemiBold"/>
+                            <TextBlock Text="Apache 2.0 License" FontSize="13"/>
+                            <TextBlock Text="图标遵循Pictogrammers Free License，可用于商业和开源项目。" 
+                                       TextWrapping="Wrap" FontSize="13"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <!-- 行动按钮 -->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="15">
+                    <Button Content="访问官方页面" Click="OpenWebsite_Click"/>
+                    <Button Content="查看GitHub项目" Click="OpenGitHub_Click"/>
+                    <Button Content="加入QQ群" Click="JoinQQGroup_Click"/>
+                </StackPanel>
+
+                <!-- 版权信息 -->
+                <StackPanel HorizontalAlignment="Center" Spacing="5">
+                    <TextBlock Text="{ DynamicResource Copyleft }" Foreground="#999" TextAlignment="Center"/>
+                    <TextBlock Text="                 " 
+                               Foreground="#777" FontSize="11" TextAlignment="Center" TextWrapping="Wrap" MaxWidth="600"/>
+                    <TextBlock Text="{ DynamicResource LicenseWarning }" 
+                               Foreground="#777" FontSize="11" TextAlignment="Center" TextWrapping="Wrap" MaxWidth="600" FontWeight="SemiBold"/>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
 </UserControl>

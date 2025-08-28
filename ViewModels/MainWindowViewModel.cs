@@ -14,7 +14,7 @@ public partial class MainWindowViewModel : ViewModelBase
     private ViewModelBase _currentPage = new HomeViewModel();
 
     [ObservableProperty] 
-    private bool _isPaneOpen = true;
+    private bool _isPaneOpen = false;
 
     [ObservableProperty] 
     private ListItemTemplate? _selectedListItem;
@@ -22,7 +22,10 @@ public partial class MainWindowViewModel : ViewModelBase
     public ObservableCollection<ListItemTemplate> Items { get; } = new()
     {
         new ListItemTemplate(typeof(HomeViewModel), "HomeIcon", "主页"),
-        new ListItemTemplate(typeof(SettingsViewModel), "SettingsIcon", "设置")
+        new ListItemTemplate(typeof(ManagementViewModel), "ManagementIcon", "管理"),
+        new ListItemTemplate(typeof(SettingsViewModel), "SettingsIcon", "设置"),
+        new ListItemTemplate(typeof(ConsoleViewModel), "ConsoleIcon", "控制台"),
+        new ListItemTemplate(typeof(AboutViewModel), "AboutIcon", "关于")
     };
 
     public MainWindowViewModel()

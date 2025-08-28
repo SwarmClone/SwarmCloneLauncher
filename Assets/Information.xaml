@@ -1,0 +1,23 @@
+﻿<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    
+    <!-- 软件版本信息 -->
+    <sys:String x:Key="SoftwareName">SwarmClone AI Framework</sys:String>
+    <sys:String x:Key="SoftwareVersion">v0.1.0_alpha</sys:String>
+    
+    <!-- 版权信息 -->
+    <sys:String x:Key="Copyleft">Copyleft © 2025 SwarmClone and Contributors</sys:String>
+    <sys:String x:Key="License">GNU General Public License v3.0</sys:String>
+    
+    <!-- 联系信息 -->
+    <sys:String x:Key="WebsiteLink">https://github.com/SwarmClone</sys:String>
+    <sys:String x:Key="GitHubLink">https://github.com/SwarmClone/SwarmClone</sys:String>
+    <sys:String x:Key="QGroupLink">https://qm.qq.com/q/AAIsWuqyje</sys:String>
+    
+    <!-- 许可证警告信息 -->
+    <sys:String x:Key="LicenseWarning" xml:space="preserve">
+        如果您从任何不提供GPLv3要求的源代码访问或修改权限的实体购买，请到GitHub联系原始开发人员。
+    </sys:String>
+    
+</ResourceDictionary>
