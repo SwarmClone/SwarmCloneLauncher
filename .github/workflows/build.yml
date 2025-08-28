@@ -1,0 +1,65 @@
+# .github/workflows/build.yml
+name: Build AvaloniaUI (Win & Linux)
+
+on:
+  push:
+    tags: [ "v*.*.*" ]        # 打 tag 时触发 Release
+  pull_request:
+    branches: [ main ]        # 任意 PR 也跑一遍编译测试
+
+env:
+  DOTNET_VERSION: 8.0.0
+  PROJECT_PATH: SwarmCloneLauncher.csproj 
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        rid: [win-x64, linux-x64] 
+        include:
+          - rid: win-x64
+            os: windows-latest
+            ext: .exe
+          - rid: linux-x64
+            os: ubuntu-latest
+            ext: ""
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    # 1. 检出源码
+    - uses: actions/checkout@v4
+
+    # 2. 安装 .NET SDK
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    # 3. 还原依赖
+    - name: Restore
+      run: dotnet restore ${{ env.PROJECT_PATH }}
+
+    # 4. 发布自包含单文件（Release）
+    - name: Publish
+      run: |
+        dotnet publish ${{ env.PROJECT_PATH }} \
+          -c Release \
+          -r ${{ matrix.rid }} \
+          --self-contained true \
+          -p:PublishSingleFile=true \
+          -p:IncludeNativeLibrariesForSelfExtract=true \
+          -o publish/${{ matrix.rid }}
+
+    # 5. 打包
+    - name: Zip artifacts
+      run: |
+        cd publish/${{ matrix.rid }}
+        zip -r ../${{ matrix.rid }}.zip .
+
+    # 6. 作为 Actions Artifacts 保存
+    - name: Upload CI artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ matrix.rid }}
+        path: publish/${{ matrix.rid }}.zip
