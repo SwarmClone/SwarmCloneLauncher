@@ -3,21 +3,88 @@
         xmlns:vm="using:SwarmCloneLauncher.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="500"
-        Width="900"
-        Height="550"
-        WindowStartupLocation="CenterScreen"
+        xmlns:viewModels="clr-namespace:SwarmCloneLauncher.ViewModels"
+        mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="550"
+        Width="900" Height="550"
         x:Class="SwarmCloneLauncher.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/logo.ico"
-        Title="SwarmClone AI Framework">
-
+        Title="SwarmClone AI Framework"
+        Background="#121212">
     <Design.DataContext>
-        <!-- This only sets the DataContext for the previewer in an IDE,
-             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-        <vm:MainWindowViewModel/>
+        <vm:MainWindowViewModel />
     </Design.DataContext>
-
-    <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-
+    <Window.Styles>
+        <Style Selector="Window">
+            <Setter Property="Background" Value="#121212"/>
+        </Style>
+        
+        <Style Selector="ListBoxItem">
+            <Setter Property="Background" Value="#171717"/>
+            <Setter Property="Height" Value="45"/>
+            <Setter Property="Padding" Value="10,0"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <ContentPresenter Name="PART_ContentPresenter"
+                                      Background="{TemplateBinding Background}"
+                                      BorderBrush="{TemplateBinding BorderBrush}"
+                                      BorderThickness="{TemplateBinding BorderThickness}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      Content="{TemplateBinding Content}"
+                                      Padding="{TemplateBinding Padding}"
+                                      HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+        
+        <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+            <Setter Property="Background" Value="#2E2F2F"/>
+        </Style>
+        
+        <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#1A1A1A"/>
+        </Style>
+        
+        <Style Selector="ListBoxItem:selected:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#3E3F3F"/>
+        </Style>
+    </Window.Styles>
+    <SplitView IsPaneOpen="{Binding IsPaneOpen}"
+               OpenPaneLength="200"
+               DisplayMode="CompactInline"
+               Margin="12"
+               CompactPaneLength="50">
+        <SplitView.Pane>
+            <StackPanel Spacing="5" Margin="5">
+                <Button Command="{Binding TriggerPaneCommand}" Height="40" Background="Transparent">
+                    <PathIcon Data="{StaticResource MenuIcon}" />
+                </Button>
+                <ListBox ItemsSource="{Binding Items}"
+                         SelectedItem="{Binding SelectedListItem}"
+                         Background="Transparent"
+                         BorderThickness="0">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate DataType="{x:Type viewModels:ListItemTemplate}">
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="15"
+                                        VerticalAlignment="Center">
+                                <PathIcon Data="{Binding ListItemIcon}" />
+                                <TextBlock Text="{Binding Label}" 
+                                           Foreground="White"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </StackPanel>
+        </SplitView.Pane>
+        <SplitView.Content>
+            <Border CornerRadius="12 0 0 0" Background="#121212">
+                <TransitioningContentControl Content="{Binding CurrentPage}" />
+            </Border>
+        </SplitView.Content>
+    </SplitView>
 </Window>
