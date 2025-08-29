@@ -52,7 +52,7 @@ jobs:
 
       - name: Restore .NET project
         run: dotnet restore "${{ env.PROJECT_PATH }}"
-        
+
       - name: Publish .NET project
         run: >
           dotnet publish "${{ env.PROJECT_PATH }}"
@@ -61,7 +61,6 @@ jobs:
           --self-contained true
           -p:PublishSingleFile=true
           -p:PublishReadyToRun=true
-          -p:PublishTrimmed=true 
           -p:DebugSymbols=false
           -o "launcher"
 
