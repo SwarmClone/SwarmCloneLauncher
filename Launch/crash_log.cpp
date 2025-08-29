@@ -1,3 +1,4 @@
+#include "crash_log.h"
 #include "system_info.h"
 
 #include <iostream>
@@ -14,18 +15,54 @@
     #pragma comment(lib, "comsuppw.lib")
     #pragma comment(lib, "ole32.lib")
     #pragma comment(lib, "oleaut32.lib")
-
 #else
     #include <unistd.h>
     #include <sys/wait.h>
-    #include <fcntl.h>
-    #include <sys/utsname.h>
-    #include <sys/sysinfo.h>
     #ifdef __APPLE__
         #include <sys/types.h>
         #include <sys/sysctl.h>
     #endif
 #endif
+
+// 生成崩溃日志文件
+bool generateCrashLog(const std::string& fullPath, const std::vector<std::string>& programOutput) {
+    std::string crashLogName = "crashlog_" + getCurrentTimestamp() + ".log";
+    std::ofstream crashLog(crashLogName);
+
+    if (crashLog.is_open()) {
+        crashLog << "（" << fullPath << "）于（" << getFormattedTime() << "）遇到严重问题而崩溃。请将本日志提交给软件维护人员，方便我们解决问题。\n";
+        crashLog << "--------------------\n";
+
+        // 系统信息
+        #ifdef _WIN32
+            crashLog << "系统版本：" << getWindowsVersion() << "\n";
+        #else
+            crashLog << "系统版本：" << getUnixVersion() << "\n";
+        #endif
+        crashLog << "处理器：" << getCpuInfo() << "\n";
+        crashLog << "运行内存：" << getMemoryInfo() << "\n";
+        crashLog << "显卡：\n";
+        std::vector<std::string> gpus = getGpuInfo();
+        for (size_t i = 0; i < gpus.size(); i++) {
+            crashLog << "GPU" << i << "：" << gpus[i] << "\n";
+        }
+        crashLog << "系统类型：" << getSystemType() << "\n";
+        crashLog << "--------------------\n";
+        crashLog << "以下是自程序启动后到崩溃前输出的全部信息：\n";
+
+        // 程序输出
+        for (const auto& line : programOutput) {
+            crashLog << line;
+        }
+
+        crashLog.close();
+        std::cout << "崩溃日志已生成: " << crashLogName << std::endl;
+        return true;
+    } else {
+        std::cerr << "无法创建崩溃日志文件" << std::endl;
+        return false;
+    }
+}
 
 // 运行程序并处理崩溃
 bool runProgramWithCrashLogging(const std::string& relativePath, const std::string& programName) {
@@ -227,24 +264,4 @@ bool runProgramWithCrashLogging(const std::string& relativePath, const std::stri
 #endif
 
     return true;
-}
-
-int main()
-{
-    std::string relativePath = "launcher/";
-#ifdef _WIN32
-    std::string programName = "SwarmCloneLauncher.exe";
-#else
-    std::string programName = "SwarmCloneLauncher";
-#endif
-
-    bool success = runProgramWithCrashLogging(relativePath, programName);
-
-    if (success) {
-        std::cout << "程序正常完成" << std::endl;
-    } else {
-        std::cout << "程序异常终止" << std::endl;
-    }
-
-    return 0;
 }

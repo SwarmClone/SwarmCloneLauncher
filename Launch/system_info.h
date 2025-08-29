@@ -14,7 +14,5 @@ std::string getMemoryInfo();
 std::vector<std::string> getGpuInfo();
 std::string getSystemType();
 std::string getUnixVersion();
-bool generateCrashLog(const std::string& fullPath, const std::vector<std::string>& programOutput);
-bool runProgramWithCrashLogging(const std::string& relativePath, const std::string& programName);
 
 #endif // SYSTEM_INFO_H
