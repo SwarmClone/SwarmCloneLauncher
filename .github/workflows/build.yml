@@ -53,14 +53,13 @@ jobs:
       - name: Restore .NET project
         run: dotnet restore "${{ env.PROJECT_PATH }}"
 
-      - name: Publish .NET project
+      - name: Publish .NET project (NativeAOT, multi-file)
         run: >
           dotnet publish "${{ env.PROJECT_PATH }}"
           -c Release
           -r ${{ matrix.rid }}
           --self-contained true
-          -p:PublishSingleFile=true
-          -p:PublishReadyToRun=true
+          -p:PublishAot=true
           -p:DebugSymbols=false
           -o "launcher"
 
