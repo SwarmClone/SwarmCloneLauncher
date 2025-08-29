@@ -62,18 +62,23 @@ jobs:
           -p:DebugSymbols=false
           -o "launcher"
 
-      - name: Create final package
+      - name: Create final package (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
         run: |
-          mkdir final
-          if ("${{ runner.os }}" -eq "Windows") {
-            Copy-Item "launch.exe" -Destination "final/launch.exe"
-            Copy-Item "launcher" -Recurse -Destination "final/launcher"
-            Compress-Archive -Path "final/*" -DestinationPath "${{ matrix.rid }}.zip"
-          } else {
-            cp launch final/launch
-            cp -r launcher final/launcher
-            zip -r "${{ matrix.rid }}.zip" final
-          }
+          New-Item -ItemType Directory -Force -Path final
+          Copy-Item launch.exe -Destination final/
+          Copy-Item launcher -Recurse -Destination final/
+          Compress-Archive -Path final/* -DestinationPath "${{ matrix.rid }}.zip"
+
+      - name: Create final package (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          mkdir -p final
+          cp launch final/
+          cp -r launcher final/
+          cd final
+          zip -r "../${{ matrix.rid }}.zip" .
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
