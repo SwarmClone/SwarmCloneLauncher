@@ -12,7 +12,7 @@ if(WIN32)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /ENTRY:mainCRTStartup")
 endif()
 
-add_executable(launch main.cpp system_info.cpp)
+add_executable(launch main.cpp system_info.cpp crash_log.cpp)
 
 if(WIN32)
     # Windows 平台链接库
