@@ -1,8 +1,7 @@
 <linker>
     <assembly fullname="Avalonia.*" preserve="All" />
-
     <assembly fullname="SwarmCloneLauncher">
-        <type fullname="SwarmCloneLauncher.Views.*" preserve="All" />
+        <type fullname="SwarmCloneLauncher.Views.*"   preserve="All" />
         <type fullname="SwarmCloneLauncher.ViewModels.*" preserve="All" />
     </assembly>
 </linker>
