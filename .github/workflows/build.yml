@@ -50,13 +50,12 @@ jobs:
           cmake --build "${{ env.LAUNCH_DIR }}/build" --config Release
           cp "${{ env.LAUNCH_DIR }}/build/launch" ./launch
 
-      - name: Publish .NET project (NativeAOT, multi-file)
+      - name: Publish .NET project 
         run: >
           dotnet publish "${{ env.PROJECT_PATH }}"
           -c Release
           -r ${{ matrix.rid }}
           --self-contained true
-          -p:PublishAot=true
           -p:DebugSymbols=false
           -o "launcher"
 

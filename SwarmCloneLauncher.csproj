@@ -1,14 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-      <OutputType Condition="'$(RuntimeIdentifier)'!='' And $(RuntimeIdentifier.StartsWith('win'))">WinExe</OutputType>
-      <OutputType Condition="'$(OutputType)'==''">Exe</OutputType>
       <TargetFramework>net8.0</TargetFramework>
-      <PublishAot>true</PublishAot>
-      <StripsSymbols>false</StripsSymbols>
-      <TrimmerRootDescriptor>roots.xml</TrimmerRootDescriptor>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(PublishAot)' == 'true'">
       <PublishSingleFile>false</PublishSingleFile>
+      <OutputType>WinExe</OutputType>
       <Nullable>enable</Nullable>
       <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
       <ApplicationManifest>app.manifest</ApplicationManifest>
