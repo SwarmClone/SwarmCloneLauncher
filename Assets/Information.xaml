@@ -7,7 +7,7 @@
     <sys:String x:Key="SoftwareVersion">v0.1.0_alpha</sys:String>
     
     <!-- 版权信息 -->
-    <sys:String x:Key="Copyleft">Copyleft © 2025 SwarmClone and Contributors</sys:String>
+    <sys:String x:Key="Copyleft">Copyright © 2025 SwarmClone</sys:String>
     <sys:String x:Key="License">GNU General Public License v3.0</sys:String>
     
     <!-- 联系信息 -->
