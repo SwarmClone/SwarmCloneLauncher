@@ -26,8 +26,10 @@ if(WIN32)
 
     if(MSVC)
         target_compile_options(launch PRIVATE /EHsc /W4)
+        target_compile_options(launch PRIVATE "/utf-8")
         target_link_libraries(launch comsuppw)
     endif()
+    
 elseif(APPLE)
     find_library(IOKIT IOKit)
     find_library(COREFOUNDATION CoreFoundation)
