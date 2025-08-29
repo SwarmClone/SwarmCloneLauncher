@@ -36,6 +36,14 @@ jobs:
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
+      - name: Set up UTF-8 encoding (Windows)
+        if: runner.os == 'Windows'
+        run: chcp 65001
+
+      - name: Set up UTF-8 encoding (Linux)
+        if: runner.os == 'Linux'
+        run: echo "LANG=C.UTF-8" >> $GITHUB_ENV
+        
       - name: Build C++ launch (Windows)
         if: runner.os == 'Windows'
         run: |

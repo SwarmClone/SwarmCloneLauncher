@@ -31,6 +31,10 @@ bool generateCrashLog(const std::string& fullPath, const std::vector<std::string
     std::ofstream crashLog(crashLogName);
 
     if (crashLog.is_open()) {
+        // 写入 UTF-8 BOM 头，帮助一些编辑器识别编码
+        const unsigned char bom[] = {0xEF, 0xBB, 0xBF};
+        crashLog.write(reinterpret_cast<const char*>(bom), sizeof(bom));
+
         crashLog << fullPath << u8"于" << getFormattedTime() << u8"遇到严重问题而崩溃。请将本日志提交给软件维护人员，方便我们解决问题。\n";
         crashLog << "--------------------\n";
 
