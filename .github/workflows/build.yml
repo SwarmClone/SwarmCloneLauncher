@@ -79,15 +79,6 @@ jobs:
           /p:RuntimeIdentifier=${{ matrix.rid }}
           -o "launcher"
 
-      - name: Check file size
-        run: |
-          echo "Checking file sizes in launcher directory:"
-          if [ "${{ matrix.rid }}" = "win-x64" ]; then
-            find launcher -name "*.exe" -exec ls -lh {} \;
-          else
-            find launcher -name "SwarmCloneLauncher" -exec ls -lh {} \;
-          fi
-
       - name: Create final package (Windows)
         if: runner.os == 'Windows'
         shell: pwsh
