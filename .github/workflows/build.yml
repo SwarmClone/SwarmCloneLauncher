@@ -67,6 +67,8 @@ jobs:
           -p:PublishSingleFile=true
           -p:DebugSymbols=false
           -p:EnableCompressionInSingleFile=true
+          -p:IncludeNativeLibrariesForSelfExtract=true
+          -p:IncludeAllContentForSelfExtract=true
           -o "launcher"
 
       - name: Create final package (Windows)
@@ -75,9 +77,10 @@ jobs:
         run: |
           New-Item -ItemType Directory -Force -Path final
           Copy-Item launch.exe -Destination final/
-          Copy-Item "launcher/*" -Recurse -Destination final/
-          $exeName = (Get-ChildItem "launcher/*.exe" | Select-Object -First 1).Name
-          Rename-Item "final/$exeName" -NewName "SwarmCloneLauncher.exe"
+          
+          New-Item -ItemType Directory -Force -Path final/launcher
+          Copy-Item "launcher/*" -Recurse -Destination final/launcher/
+          
           Compress-Archive -Path final/* -DestinationPath "${{ matrix.rid }}.zip"
 
       - name: Create final package (Linux)
@@ -85,20 +88,13 @@ jobs:
         run: |
           mkdir -p final
           cp launch final/
-          cp -r launcher/* final/
+          
+          mkdir -p final/launcher
+          cp -r launcher/* final/launcher/
+          
+          chmod +x final/launcher/SwarmCloneLauncher
           
           cd final
-          
-          for file in *; do
-            if [[ -f "$file" && -x "$file" && "$file" != "launch" && "$file" != "SwarmCloneLauncher" ]]; then
-              echo "Renaming $file to SwarmCloneLauncher"
-              mv "$file" "SwarmCloneLauncher"
-              break
-            fi
-          done
-          
-          chmod +x SwarmCloneLauncher
-          
           zip -r "../${{ matrix.rid }}.zip" .
 
       - name: Upload Artifact
