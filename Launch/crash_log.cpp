@@ -24,6 +24,14 @@
     #endif
 #endif
 
+#ifdef _WIN32
+struct CodePageRestorer {
+    UINT old;
+    CodePageRestorer() { old = GetConsoleOutputCP(); SetConsoleOutputCP(65001); }
+    ~CodePageRestorer() { SetConsoleOutputCP(old); }
+};
+#endif
+
 // 生成崩溃日志文件
 bool generateCrashLog(const std::string& fullPath, const std::vector<std::string>& programOutput) {
     std::string crashLogName = "crashlog_" + getCurrentTimestamp() + ".log";

@@ -231,6 +231,7 @@ bool runProgramWithCrashLogging(const std::string& relativePath, const std::stri
 
 int main()
 {
+    CodePageRestorer _;
     std::string relativePath = "launcher/";
 #ifdef _WIN32
     std::string programName = "SwarmCloneLauncher.exe";
