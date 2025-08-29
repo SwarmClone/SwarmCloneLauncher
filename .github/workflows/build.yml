@@ -1,13 +1,16 @@
-# .github/workflows/build.yml
 name: Build AvaloniaUI (Win & Linux)
+
 on:
   push:
-    branches: [ main ]      # 每次 push 到 main 都会触发
+    branches: [main]
   pull_request:
-    branches: [ main ]      # PR 也触发
+    branches: [main]
+
 env:
   DOTNET_VERSION: 8.0.x
   PROJECT_PATH: SwarmCloneLauncher.csproj
+  LAUNCH_DIR: Launch
+
 jobs:
   build:
     name: ${{ matrix.rid }}
@@ -20,36 +23,60 @@ jobs:
             os: windows-latest
           - rid: linux-x64
             os: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Setup CMake
+        uses: lukka/get-cmake@latest
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
-      - name: Restore
+
+      - name: Build C++ launch (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          cmake -S "${{ env.LAUNCH_DIR }}" -B "${{ env.LAUNCH_DIR }}/build" -DCMAKE_BUILD_TYPE=Release
+          cmake --build "${{ env.LAUNCH_DIR }}/build" --config Release
+          Copy-Item "${{ env.LAUNCH_DIR }}/build/Release/launch.exe" -Destination "launch.exe"
+
+      - name: Build C++ launch (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          cmake -S "${{ env.LAUNCH_DIR }}" -B "${{ env.LAUNCH_DIR }}/build" -DCMAKE_BUILD_TYPE=Release
+          cmake --build "${{ env.LAUNCH_DIR }}/build" --config Release
+          cp "${{ env.LAUNCH_DIR }}/build/launch" ./launch
+
+      - name: Restore .NET project
         run: dotnet restore "${{ env.PROJECT_PATH }}"
-      - name: Publish
+
+      - name: Publish .NET project
         run: >
           dotnet publish "${{ env.PROJECT_PATH }}"
           -c Release
           -r ${{ matrix.rid }}
           --self-contained true
           -p:DebugSymbols=false
-          -o "publish/${{ matrix.rid }}"
-      - name: Zip artifacts (Windows)
-        if: runner.os == 'Windows'
-        shell: pwsh
+          -o "launcher"
+
+      - name: Create final package
         run: |
-          Compress-Archive -Path "publish/${{ matrix.rid }}/*" `
-                          -DestinationPath "publish/${{ matrix.rid }}.zip"
-      - name: Zip artifacts (Linux)
-        if: runner.os == 'Linux'
-        run: |
-          cd "publish/${{ matrix.rid }}"
-          zip -r "../${{ matrix.rid }}.zip" .
+          mkdir final
+          if ("${{ runner.os }}" -eq "Windows") {
+            Copy-Item "launch.exe" -Destination "final/launch.exe"
+            Copy-Item "launcher" -Recurse -Destination "final/launcher"
+            Compress-Archive -Path "final/*" -DestinationPath "${{ matrix.rid }}.zip"
+          } else {
+            cp launch final/launch
+            cp -r launcher final/launcher
+            zip -r "${{ matrix.rid }}.zip" final
+          }
+
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.rid }}
-          path: publish/${{ matrix.rid }}.zip
+          path: ${{ matrix.rid }}.zip
