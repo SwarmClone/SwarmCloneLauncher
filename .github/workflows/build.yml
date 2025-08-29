@@ -58,13 +58,15 @@ jobs:
           cmake --build "${{ env.LAUNCH_DIR }}/build" --config Release
           cp "${{ env.LAUNCH_DIR }}/build/launch" ./launch
 
-      - name: Publish .NET project 
+      - name: Publish .NET project as single file
         run: >
           dotnet publish "${{ env.PROJECT_PATH }}"
           -c Release
           -r ${{ matrix.rid }}
           --self-contained true
+          -p:PublishSingleFile=true
           -p:DebugSymbols=false
+          -p:EnableCompressionInSingleFile=true
           -o "launcher"
 
       - name: Create final package (Windows)
@@ -73,7 +75,9 @@ jobs:
         run: |
           New-Item -ItemType Directory -Force -Path final
           Copy-Item launch.exe -Destination final/
-          Copy-Item launcher -Recurse -Destination final/
+          Copy-Item "launcher/*" -Recurse -Destination final/
+          $exeName = (Get-ChildItem "launcher/*.exe" | Select-Object -First 1).Name
+          Rename-Item "final/$exeName" -NewName "SwarmCloneLauncher.exe"
           Compress-Archive -Path final/* -DestinationPath "${{ matrix.rid }}.zip"
 
       - name: Create final package (Linux)
@@ -81,7 +85,11 @@ jobs:
         run: |
           mkdir -p final
           cp launch final/
-          cp -r launcher final/
+          cp -r launcher/* final/
+          cd final
+          find . -name "SwarmCloneLauncher" -o -name "SwarmCloneLauncher.*" | head -1 | xargs -I {} mv {} SwarmCloneLauncher
+          chmod +x SwarmCloneLauncher
+          cd ..
           cd final
           zip -r "../${{ matrix.rid }}.zip" .
 
