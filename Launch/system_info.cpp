@@ -39,7 +39,6 @@ std::string getCurrentTimestamp() {
 
     std::stringstream ss;
 
-    // 使用安全的 localtime_s 函数 (Windows) 或 localtime_r (Unix-like)
     #ifdef _WIN32
         struct tm time_info;
         localtime_s(&time_info, &in_time_t);

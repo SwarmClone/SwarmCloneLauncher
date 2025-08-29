@@ -24,7 +24,6 @@
     #endif
 #endif
 
-
 // 生成崩溃日志文件
 bool generateCrashLog(const std::string& fullPath, const std::vector<std::string>& programOutput) {
     std::string crashLogName = "crashlog_" + getCurrentTimestamp() + ".log";
@@ -62,6 +61,11 @@ bool generateCrashLog(const std::string& fullPath, const std::vector<std::string
 
         crashLog.close();
         std::cout << u8"崩溃日志已生成: " << crashLogName << std::endl;
+        
+        // 弹窗提示用户
+        std::string message = std::string(u8"程序已崩溃，崩溃日志已生成：\n") + crashLogName + u8"\n请将此日志文件提交给软件维护人员。";
+        ShowMessageBox(message, u8"程序崩溃");
+        
         return true;
     } else {
         std::cerr << u8"无法创建崩溃日志文件" << std::endl;

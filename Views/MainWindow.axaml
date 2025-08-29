@@ -54,7 +54,7 @@
         </Style>
     </Window.Styles>
     <SplitView IsPaneOpen="{Binding IsPaneOpen}"
-               OpenPaneLength="200"
+               OpenPaneLength="160"
                DisplayMode="CompactInline"
                Margin="12"
                CompactPaneLength="50">

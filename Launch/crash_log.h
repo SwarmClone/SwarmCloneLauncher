@@ -8,5 +8,6 @@
 
 bool generateCrashLog(const std::string& fullPath, const std::vector<std::string>& programOutput);
 bool runProgramWithCrashLogging(const std::string& relativePath, const std::string& programName);
+void ShowMessageBox(const std::string& message, const std::string& title);
 
 #endif // CRASH_LOG_H
