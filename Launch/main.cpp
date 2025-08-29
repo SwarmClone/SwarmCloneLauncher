@@ -3,7 +3,6 @@
 #include <iomanip>
 #include <sstream>
 #include <fstream>
-#include <algorithm>
 #include <iostream>
 
 #ifdef _WIN32
@@ -22,7 +21,6 @@
 #else
     #include <unistd.h>
     #include <sys/wait.h>
-    #include <signal.h>
     #include <fcntl.h>
     #include <sys/utsname.h>
     #include <sys/sysinfo.h>
@@ -411,6 +409,46 @@ std::string getSystemType() {
 }
 #endif
 
+// 生成崩溃日志文件
+bool generateCrashLog(const std::string& fullPath, const std::vector<std::string>& programOutput) {
+    std::string crashLogName = "crashlog_" + getCurrentTimestamp() + ".log";
+    std::ofstream crashLog(crashLogName);
+
+    if (crashLog.is_open()) {
+        crashLog << "（" << fullPath << "）于（" << getFormattedTime() << "）遇到严重问题而崩溃。请将本日志提交给软件维护人员，方便我们解决问题。\n";
+        crashLog << "--------------------\n";
+
+        // 系统信息
+        #ifdef _WIN32
+            crashLog << "系统版本：" << getWindowsVersion() << "\n";
+        #else
+            crashLog << "系统版本：" << getUnixVersion() << "\n";
+        #endif
+        crashLog << "处理器：" << getCpuInfo() << "\n";
+        crashLog << "运行内存：" << getMemoryInfo() << "\n";
+        crashLog << "显卡：\n";
+        std::vector<std::string> gpus = getGpuInfo();
+        for (size_t i = 0; i < gpus.size(); i++) {
+            crashLog << "GPU" << i << "：" << gpus[i] << "\n";
+        }
+        crashLog << "系统类型：" << getSystemType() << "\n";
+        crashLog << "--------------------\n";
+        crashLog << "以下是自程序启动后到崩溃前输出的全部信息：\n";
+
+        // 程序输出
+        for (const auto& line : programOutput) {
+            crashLog << line;
+        }
+
+        crashLog.close();
+        std::cout << "崩溃日志已生成: " << crashLogName << std::endl;
+        return true;
+    } else {
+        std::cerr << "无法创建崩溃日志文件" << std::endl;
+        return false;
+    }
+}
+
 // 运行程序并处理崩溃
 bool runProgramWithCrashLogging(const std::string& relativePath, const std::string& programName) {
     std::string fullPath = relativePath + "/" + programName;
@@ -507,36 +545,7 @@ bool runProgramWithCrashLogging(const std::string& relativePath, const std::stri
 
         // 如果程序异常退出（崩溃）
         if (exitCode != 0) {
-            std::string crashLogName = "crashlog_" + getCurrentTimestamp() + ".log";
-            std::ofstream crashLog(crashLogName);
-
-            if (crashLog.is_open()) {
-                crashLog << "（" << fullPath << "）于（" << getFormattedTime() << "）遇到严重问题而崩溃。请将本日志提交给软件维护人员，方便我们解决问题。\n";
-                crashLog << "--------------------\n";
-
-                // 系统信息
-                crashLog << "系统版本：" << getWindowsVersion() << "\n";
-                crashLog << "处理器：" << getCpuInfo() << "\n";
-                crashLog << "运行内存：" << getMemoryInfo() << "\n";
-                crashLog << "显卡：\n";
-                std::vector<std::string> gpus = getGpuInfo();
-                for (size_t i = 0; i < gpus.size(); i++) {
-                    crashLog << "GPU" << i << "：" << gpus[i] << "\n";
-                }
-                crashLog << "系统类型：" << getSystemType() << "\n";
-                crashLog << "--------------------\n";
-                crashLog << "以下是自程序启动后到崩溃前输出的全部信息：\n";
-
-                // 程序输出
-                for (const auto& line : programOutput) {
-                    crashLog << line;
-                }
-
-                crashLog.close();
-                std::cout << "崩溃日志已生成: " << crashLogName << std::endl;
-            } else {
-                std::cerr << "无法创建崩溃日志文件" << std::endl;
-            }
+            generateCrashLog(fullPath, programOutput);
 
             // 关闭进程和线程句柄
             CloseHandle(pi.hProcess);
@@ -621,36 +630,7 @@ bool runProgramWithCrashLogging(const std::string& relativePath, const std::stri
             std::cout << "程序退出代码: " << exitCode << std::endl;
 
             if (exitCode != 0) {
-                std::string crashLogName = "crashlog_" + getCurrentTimestamp() + ".log";
-                std::ofstream crashLog(crashLogName);
-
-                if (crashLog.is_open()) {
-                    crashLog << "（" << fullPath << "）于（" << getFormattedTime() << "）遇到严重问题而崩溃。请将本日志提交给软件维护人员，方便我们解决问题。\n";
-                    crashLog << "--------------------\n";
-
-                    // 系统信息
-                    crashLog << "系统版本：" << getUnixVersion() << "\n";
-                    crashLog << "处理器：" << getCpuInfo() << "\n";
-                    crashLog << "运行内存：" << getMemoryInfo() << "\n";
-                    crashLog << "显卡：\n";
-                    std::vector<std::string> gpus = getGpuInfo();
-                    for (size_t i = 0; i < gpus.size(); i++) {
-                        crashLog << "GPU" << i << "：" << gpus[i] << "\n";
-                    }
-                    crashLog << "系统类型：" << getSystemType() << "\n";
-                    crashLog << "--------------------\n";
-                    crashLog << "以下是自程序启动后到崩溃前输出的全部信息：\n";
-
-                    // 程序输出
-                    for (const auto& line : programOutput) {
-                        crashLog << line;
-                    }
-
-                    crashLog.close();
-                    std::cout << "崩溃日志已生成: " << crashLogName << std::endl;
-                } else {
-                    std::cerr << "无法创建崩溃日志文件" << std::endl;
-                }
+                generateCrashLog(fullPath, programOutput);
                 return false;
             }
         } else if (WIFSIGNALED(status)) {
@@ -658,36 +638,7 @@ bool runProgramWithCrashLogging(const std::string& relativePath, const std::stri
             int signal = WTERMSIG(status);
             std::cout << "程序被信号终止: " << signal << std::endl;
 
-            std::string crashLogName = "crashlog_" + getCurrentTimestamp() + ".log";
-            std::ofstream crashLog(crashLogName);
-
-            if (crashLog.is_open()) {
-                crashLog << "（" << fullPath << "）于（" << getFormattedTime() << "）遇到严重问题而崩溃。请将本日志提交给软件维护人员，方便我们解决问题。\n";
-                crashLog << "--------------------\n";
-
-                // 系统信息
-                crashLog << "系统版本：" << getUnixVersion() << "\n";
-                crashLog << "处理器：" << getCpuInfo() << "\n";
-                crashLog << "运行内存：" << getMemoryInfo() << "\n";
-                crashLog << "显卡：\n";
-                std::vector<std::string> gpus = getGpuInfo();
-                for (size_t i = 0; i < gpus.size(); i++) {
-                    crashLog << "GPU" << i << "：" << gpus[i] << "\n";
-                }
-                crashLog << "系统类型：" << getSystemType() << "\n";
-                crashLog << "--------------------\n";
-                crashLog << "以下是自程序启动后到崩溃前输出的全部信息：\n";
-
-                // 程序输出
-                for (const auto& line : programOutput) {
-                    crashLog << line;
-                }
-
-                crashLog.close();
-                std::cout << "崩溃日志已生成: " << crashLogName << std::endl;
-            } else {
-                std::cerr << "无法创建崩溃日志文件" << std::endl;
-            }
+            generateCrashLog(fullPath, programOutput);
             return false;
         }
     } else {
