@@ -64,11 +64,17 @@ jobs:
           -c Release
           -r ${{ matrix.rid }}
           --self-contained true
-          -p:PublishSingleFile=true
-          -p:DebugSymbols=false
-          -p:EnableCompressionInSingleFile=true
-          -p:IncludeNativeLibrariesForSelfExtract=true
-          -p:IncludeAllContentForSelfExtract=true
+          --no-restore
+          /p:PublishSingleFile=true
+          /p:DebugType=None
+          /p:DebugSymbols=false
+          /p:EnableCompressionInSingleFile=true
+          /p:IncludeNativeLibrariesForSelfExtract=true
+          /p:IncludeAllContentForSelfExtract=true
+          /p:CopyOutputSymbolsToPublishDirectory=false
+          /p:UseAppHost=true
+          /p:SelfContained=true
+          /p:RuntimeIdentifier=${{ matrix.rid }}
           -o "launcher"
 
       - name: Create final package (Windows)
@@ -93,6 +99,9 @@ jobs:
           cp -r launcher/* final/launcher/
           
           chmod +x final/launcher/SwarmCloneLauncher
+          
+          echo "Final file size:"
+          ls -lh final/launcher/SwarmCloneLauncher
           
           cd final
           zip -r "../${{ matrix.rid }}.zip" .
