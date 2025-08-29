@@ -267,8 +267,12 @@ std::string getSystemType() {
         systemType = "64位操作系统，基于x64的处理器";
     } else if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_INTEL) {
         systemType = "32位操作系统，基于x86的处理器";
+    } else if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_ARM) {
+        systemType = "32位操作系统，基于ARM的处理器";
+    } else if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_ARM64) {
+        systemType = "64位操作系统，基于ARM64的处理器";
     } else {
-        systemType = "未知架构";
+        systemType = "未知系统架构";
     }
 
     return systemType;
