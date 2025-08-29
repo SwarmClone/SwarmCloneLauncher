@@ -86,11 +86,19 @@ jobs:
           mkdir -p final
           cp launch final/
           cp -r launcher/* final/
+          
           cd final
-          find . -name "SwarmCloneLauncher" -o -name "SwarmCloneLauncher.*" | head -1 | xargs -I {} mv {} SwarmCloneLauncher
+          
+          for file in *; do
+            if [[ -f "$file" && -x "$file" && "$file" != "launch" && "$file" != "SwarmCloneLauncher" ]]; then
+              echo "Renaming $file to SwarmCloneLauncher"
+              mv "$file" "SwarmCloneLauncher"
+              break
+            fi
+          done
+          
           chmod +x SwarmCloneLauncher
-          cd ..
-          cd final
+          
           zip -r "../${{ matrix.rid }}.zip" .
 
       - name: Upload Artifact
