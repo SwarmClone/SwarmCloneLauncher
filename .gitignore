@@ -418,3 +418,6 @@ FodyWeavers.xsd
 *.msp
 
 .idea/
+
+Launch/cmake-build-debug-visual-studio/
+Launch/cmake-build-debug-visual-studio
