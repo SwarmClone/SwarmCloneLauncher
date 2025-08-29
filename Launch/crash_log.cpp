@@ -31,25 +31,25 @@ bool generateCrashLog(const std::string& fullPath, const std::vector<std::string
     std::ofstream crashLog(crashLogName);
 
     if (crashLog.is_open()) {
-        crashLog << "（" << fullPath << "）于（" << getFormattedTime() << "）遇到严重问题而崩溃。请将本日志提交给软件维护人员，方便我们解决问题。\n";
+        crashLog << fullPath << u8"于" << getFormattedTime() << u8"遇到严重问题而崩溃。请将本日志提交给软件维护人员，方便我们解决问题。\n";
         crashLog << "--------------------\n";
 
         // 系统信息
         #ifdef _WIN32
-            crashLog << "系统版本：" << getWindowsVersion() << "\n";
+            crashLog << u8"系统版本：" << getWindowsVersion() << "\n";
         #else
             crashLog << "系统版本：" << getUnixVersion() << "\n";
         #endif
-        crashLog << "处理器：" << getCpuInfo() << "\n";
-        crashLog << "运行内存：" << getMemoryInfo() << "\n";
-        crashLog << "显卡：\n";
+        crashLog << u8"处理器：" << getCpuInfo() << "\n";
+        crashLog << u8"运行内存：" << getMemoryInfo() << "\n";
+        crashLog << u8"显卡：\n";
         std::vector<std::string> gpus = getGpuInfo();
         for (size_t i = 0; i < gpus.size(); i++) {
             crashLog << "GPU" << i << "：" << gpus[i] << "\n";
         }
-        crashLog << "系统类型：" << getSystemType() << "\n";
+        crashLog << u8"系统类型：" << getSystemType() << "\n";
         crashLog << "--------------------\n";
-        crashLog << "以下是自程序启动后到崩溃前输出的全部信息：\n";
+        crashLog << u8"以下是自程序启动后到崩溃前输出的全部信息：\n";
 
         // 程序输出
         for (const auto& line : programOutput) {
@@ -57,10 +57,10 @@ bool generateCrashLog(const std::string& fullPath, const std::vector<std::string
         }
 
         crashLog.close();
-        std::cout << "崩溃日志已生成: " << crashLogName << std::endl;
+        std::cout << u8"崩溃日志已生成: " << crashLogName << std::endl;
         return true;
     } else {
-        std::cerr << "无法创建崩溃日志文件" << std::endl;
+        std::cerr << u8"无法创建崩溃日志文件" << std::endl;
         return false;
     }
 }
@@ -78,7 +78,7 @@ bool runProgramWithCrashLogging(const std::string& relativePath, const std::stri
         std::cerr.rdbuf(logFile.rdbuf());
     #endif
 
-    std::cout << "准备运行程序: " << fullPath << std::endl;
+    std::cout << u8"准备运行程序: " << fullPath << std::endl;
 
     std::vector<std::string> programOutput;
 
@@ -92,7 +92,7 @@ bool runProgramWithCrashLogging(const std::string& relativePath, const std::stri
     sa.lpSecurityDescriptor = NULL;
 
     if (!CreatePipe(&hReadPipe, &hWritePipe, &sa, 0)) {
-        std::cerr << "创建管道失败" << std::endl;
+        std::cerr << u8"创建管道失败" << std::endl;
         #ifdef _WIN32
             std::cout.rdbuf(coutBuf);
             std::cerr.rdbuf(cerrBuf);
@@ -157,7 +157,7 @@ bool runProgramWithCrashLogging(const std::string& relativePath, const std::stri
     // 获取退出代码
     DWORD exitCode;
     if (GetExitCodeProcess(pi.hProcess, &exitCode)) {
-        std::cout << "程序退出代码: " << exitCode << std::endl;
+        std::cout << u8"程序退出代码: " << exitCode << std::endl;
 
         // 如果程序异常退出（崩溃）
         if (exitCode != 0) {
@@ -176,7 +176,7 @@ bool runProgramWithCrashLogging(const std::string& relativePath, const std::stri
             return false;
         }
     } else {
-        std::cerr << "获取退出代码失败 (" << GetLastError() << ")." << std::endl;
+        std::cerr << u8"获取退出代码失败 (" << GetLastError() << ")." << std::endl;
     }
 
     // 关闭进程和线程句柄
@@ -196,7 +196,7 @@ bool runProgramWithCrashLogging(const std::string& relativePath, const std::stri
     // Linux/macOS实现
     int stdoutPipe[2];
     if (pipe(stdoutPipe) == -1) {
-        std::cerr << "创建管道失败" << std::endl;
+        std::cerr << u8"创建管道失败" << std::endl;
         return false;
     }
 
@@ -213,7 +213,7 @@ bool runProgramWithCrashLogging(const std::string& relativePath, const std::stri
 
         // 切换到指定目录
         if (chdir(relativePath.c_str()) != 0) {
-            std::cerr << "无法切换到目录: " << relativePath << std::endl;
+            std::cerr << u8"无法切换到目录: " << relativePath << std::endl;
             exit(EXIT_FAILURE);
         }
 
@@ -221,7 +221,7 @@ bool runProgramWithCrashLogging(const std::string& relativePath, const std::stri
         execl(programName.c_str(), programName.c_str(), NULL);
 
         // 如果execl返回，说明出错了
-        std::cerr << "执行程序失败: " << programName << std::endl;
+        std::cerr << u8"执行程序失败: " << programName << std::endl;
         exit(EXIT_FAILURE);
     } else if (pid > 0) {
         // 父进程
@@ -243,7 +243,7 @@ bool runProgramWithCrashLogging(const std::string& relativePath, const std::stri
 
         if (WIFEXITED(status)) {
             int exitCode = WEXITSTATUS(status);
-            std::cout << "程序退出代码: " << exitCode << std::endl;
+            std::cout << u8"程序退出代码: " << exitCode << std::endl;
 
             if (exitCode != 0) {
                 generateCrashLog(fullPath, programOutput);
@@ -252,14 +252,14 @@ bool runProgramWithCrashLogging(const std::string& relativePath, const std::stri
         } else if (WIFSIGNALED(status)) {
             // 程序被信号终止
             int signal = WTERMSIG(status);
-            std::cout << "程序被信号终止: " << signal << std::endl;
+            std::cout << u8"程序被信号终止: " << signal << std::endl;
 
             generateCrashLog(fullPath, programOutput);
             return false;
         }
     } else {
         // fork失败
-        std::cerr << "fork失败，无法创建子进程" << std::endl;
+        std::cerr << u8"fork失败，无法创建子进程" << std::endl;
         return false;
     }
 #endif

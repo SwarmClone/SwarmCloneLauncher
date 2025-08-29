@@ -65,7 +65,7 @@ std::string getFormattedTime() {
     #ifdef _WIN32
         struct tm time_info;
         localtime_s(&time_info, &in_time_t);
-        ss << std::put_time(&time_info, "%Y年%m月%d日 %H:%M:%S");
+        ss << std::put_time(&time_info, u8"%Y年%m月%d日 %H:%M:%S");
     #else
         struct tm time_info;
         localtime_r(&in_time_t, &time_info);
@@ -99,7 +99,7 @@ std::string getWindowsVersion()
     *buf = '\0';
     if (RegGetValueA(hKey, nullptr, "DisplayVersion",
                      RRF_RT_REG_SZ, nullptr, buf, &sz) == ERROR_SUCCESS)
-        ver += "\n版本号" + std::string(buf);
+        ver += u8"\n版本号" + std::string(buf);
 
     sz = sizeof(buf);
     *buf = '\0';
@@ -113,7 +113,7 @@ std::string getWindowsVersion()
         RegGetValueA(hKey, nullptr, "UBR",
                      RRF_RT_DWORD, nullptr, &ubr, &sz);
 
-        ver += "\n操作系统版本 " + std::to_string(build) + "." + std::to_string(ubr);
+        ver += u8"\n操作系统版本 " + std::to_string(build) + "." + std::to_string(ubr);
     }
 
     RegCloseKey(hKey);
@@ -261,13 +261,13 @@ std::string getSystemType() {
 
     std::string systemType;
     if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64) {
-        systemType = "64位操作系统，基于x64的处理器";
+        systemType = u8"64位操作系统，基于x64的处理器";
     } else if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_INTEL) {
-        systemType = "32位操作系统，基于x86的处理器";
+        systemType = u8"32位操作系统，基于x86的处理器";
     } else if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_ARM) {
-        systemType = "32位操作系统，基于ARM的处理器";
+        systemType = u8"32位操作系统，基于ARM的处理器";
     } else if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_ARM64) {
-        systemType = "64位操作系统，基于ARM64的处理器";
+        systemType = u8"64位操作系统，基于ARM64的处理器";
     } else {
         systemType = "未知系统架构";
     }
@@ -295,7 +295,7 @@ std::string getCpuInfo() {
     if (sysctlbyname("machdep.cpu.brand_string", &buffer, &size, NULL, 0) == 0) {
         cpuInfo = buffer;
     } else {
-        cpuInfo = "Apple Silicon (ARM架构)";
+        cpuInfo = u8"Apple Silicon (ARM架构)";
     }
 #else
     // Linux 获取CPU信息
@@ -395,13 +395,13 @@ std::string getSystemType() {
     if (uname(&buf) == 0) {
         std::string arch(buf.machine);
         if (arch == "x86_64") {
-            return "64位操作系统，基于x86_64的处理器";
+            return u8"64位操作系统，基于x86_64的处理器";
         } else if (arch == "arm64" || arch == "aarch64") {
-            return "64位操作系统，基于ARM架构的处理器";
+            return u8"64位操作系统，基于ARM架构的处理器";
         } else if (arch == "i386" || arch == "i686") {
-            return "32位操作系统，基于x86的处理器";
+            return u8"32位操作系统，基于x86的处理器";
         } else {
-            return arch + " 位操作系统";
+            return arch + u8" 位操作系统";
         }
     }
     return "Unknown System Type";
