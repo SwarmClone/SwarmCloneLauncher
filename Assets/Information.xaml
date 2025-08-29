@@ -17,7 +17,7 @@
     
     <!-- 许可证警告信息 -->
     <sys:String x:Key="LicenseWarning" xml:space="preserve">
-        如果您从任何不提供GPLv3要求的源代码访问或修改权限的实体购买，请到GitHub联系原始开发人员。
+        如果您从任何不提供GPLv3要求的源代码访问或修改权限的实体 条件性免费 或 付费取得 SwarmClone 以GPLv3许可证发布的代码及衍生作品，请到GitHub联系原始开发人员进行举报。让我们共同维护开源精神。
     </sys:String>
     
 </ResourceDictionary>

@@ -17,6 +17,8 @@ namespace SwarmCloneLauncher
 
         public override void OnFrameworkInitializationCompleted()
         {
+            var _ = Resources.Keys;
+            
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 
