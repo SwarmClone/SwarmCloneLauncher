@@ -1,5 +1,0 @@
-<Directives>
-    <Application>
-        <Assembly Name="SwarmCloneLauncher" Dynamic="Required All" />
-    </Application>
-</Directives>

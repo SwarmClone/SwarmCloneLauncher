@@ -8,6 +8,7 @@
         Width="900" Height="550"
         x:Class="SwarmCloneLauncher.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
+        WindowStartupLocation="CenterScreen"
         Icon="/Assets/logo.ico"
         Title="SwarmClone AI Framework"
         Background="#121212">
