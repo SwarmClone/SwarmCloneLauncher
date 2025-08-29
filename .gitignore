@@ -421,3 +421,8 @@ FodyWeavers.xsd
 
 Launch/cmake-build-debug-visual-studio/
 Launch/cmake-build-debug-visual-studio
+
+Launch/CMakeFiles
+Launch/build
+.marscode/
+.vscode/
