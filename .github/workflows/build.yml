@@ -61,12 +61,12 @@ jobs:
       - name: Restore NuGet packages
         run: dotnet restore "${{ env.PROJECT_PATH }}" -r ${{ matrix.rid }}
 
-      - name: Publish .NET project
+      - name: Publish .NET project (Framework-dependent)
         run: >
           dotnet publish "${{ env.PROJECT_PATH }}"
           -c Release
           -r ${{ matrix.rid }}
-          --self-contained true
+          --self-contained false
           -p:DebugSymbols=false
           -o "launcher"
 
@@ -80,6 +80,20 @@ jobs:
           New-Item -ItemType Directory -Force -Path final/launcher
           Copy-Item "launcher/*" -Recurse -Destination final/launcher/
           
+          # 创建启动脚本
+          $startScript = @'
+          @echo off
+          dotnet --version >nul 2>&1
+          if %errorlevel% neq 0 (
+              echo Error: .NET 8.0 runtime is not installed
+              echo Please download from: https://dotnet.microsoft.com/download/dotnet/8.0
+              pause
+              exit 1
+          )
+          start "" launcher\SwarmCloneLauncher.exe
+          '@
+          Set-Content -Path "final\start.bat" -Value $startScript -Encoding ASCII
+          
           Compress-Archive -Path final/* -DestinationPath "${{ matrix.rid }}.zip"
 
       - name: Create final package (Linux)
@@ -92,6 +106,19 @@ jobs:
           cp -r launcher/* final/launcher/
           
           chmod +x final/launcher/SwarmCloneLauncher
+          
+          cat > final/start.sh << 'EOF'
+          #!/bin/bash
+          if ! command -v dotnet &> /dev/null; then
+              echo "Error: .NET 8.0 runtime is not installed"
+              echo "Please install from: https://dotnet.microsoft.com/download/dotnet/8.0"
+              read -p "Press enter to continue"
+              exit 1
+          fi
+          cd launcher
+          ./SwarmCloneLauncher
+          EOF
+          chmod +x final/start.sh
           
           echo "Final file size:"
           ls -lh final/launcher/SwarmCloneLauncher
