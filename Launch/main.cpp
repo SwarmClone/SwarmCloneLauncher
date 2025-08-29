@@ -27,6 +27,14 @@
     #endif
 #endif
 
+#ifdef _WIN32
+struct CodePageRestorer {
+    UINT old;
+    CodePageRestorer() { old = GetConsoleOutputCP(); SetConsoleOutputCP(65001); }
+    ~CodePageRestorer() { SetConsoleOutputCP(old); }
+};
+#endif
+
 // 运行程序并处理崩溃
 bool runProgramWithCrashLogging(const std::string& relativePath, const std::string& programName) {
     std::string fullPath = relativePath + "/" + programName;
@@ -231,6 +239,7 @@ bool runProgramWithCrashLogging(const std::string& relativePath, const std::stri
 
 int main()
 {
+    CodePageRestorer _;
     std::string relativePath = "launcher/";
 #ifdef _WIN32
     std::string programName = "SwarmCloneLauncher.exe";
