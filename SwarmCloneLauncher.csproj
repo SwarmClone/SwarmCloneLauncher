@@ -61,7 +61,6 @@
 
   <ItemGroup>
     <!-- Native AOT 编译参数 -->
-    <IlcArg Include="--enable-serialization" />
     <IlcArg Include="--feature:System.Reflection.Metadata.MetadataUpdater.IsSupported=false" />
     <IlcArg Include="--feature:IsDynamicCodeSupported=true" />
   </ItemGroup>
