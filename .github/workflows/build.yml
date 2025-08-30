@@ -72,6 +72,18 @@ jobs:
             --self-contained true \
             -o "launcher"
 
+      - name: Check if executable exists (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          ls -la launcher/
+          if [ -f "launcher/SwarmCloneLauncher" ]; then
+            echo "Executable exists"
+            ldd launcher/SwarmCloneLauncher || true
+          else
+            echo "Executable not found"
+            exit 1
+          fi
+
       - name: Create final package (Windows)
         if: runner.os == 'Windows'
         shell: pwsh

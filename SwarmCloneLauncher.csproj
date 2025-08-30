@@ -15,7 +15,7 @@
     <DebugSymbols>true</DebugSymbols>
     <Win32Resource></Win32Resource>
     
-    <!-- 禁用内置 COM 互操作支持以避免冲突 -->
+    <!-- 禁用内置 COM 互操作支持 -->
     <BuiltInComInteropSupport>false</BuiltInComInteropSupport>
   </PropertyGroup>
 
@@ -29,7 +29,7 @@
     <PackageReference Include="Avalonia.Desktop" Version="11.3.4" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.4" />
     <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.4" />
-    <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
+    <PackageReference Include="Avalonia.Themes.Default" Version="11.3.4" />
     <PackageReference Include="Avalonia.Diagnostics" Version="11.3.4">
       <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
       <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
@@ -52,17 +52,19 @@
     <TrimmerRootAssembly Include="Avalonia.Media" />
     <TrimmerRootAssembly Include="Avalonia.Skia" />
     <TrimmerRootAssembly Include="SkiaSharp" />
+    <TrimmerRootAssembly Include="System.CommandLine" />
   </ItemGroup>
 
   <ItemGroup>
+    <!-- 添加 RD.XML 文件 -->
     <EmbeddedResource Include="rd.xml" />
   </ItemGroup>
 
   <ItemGroup>
     <!-- Native AOT 编译参数 -->
+    <IlcArg Include="--enable-serialization" />
     <IlcArg Include="--feature:System.Reflection.Metadata.MetadataUpdater.IsSupported=false" />
     <IlcArg Include="--feature:IsDynamicCodeSupported=true" />
-    <IlcArg Include="--enable-serialization" />
   </ItemGroup>
 
 </Project>
