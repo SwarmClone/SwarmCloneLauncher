@@ -42,7 +42,6 @@
     <TrimmerRootAssembly Include="Avalonia.Controls" />
     <TrimmerRootAssembly Include="Avalonia.Base" />
     <TrimmerRootAssembly Include="Avalonia.Markup" />
-    <TrimmerRootAssembly Include="Avalonia.Media" />
     <TrimmerRootAssembly Include="Avalonia.Skia" />
     <TrimmerRootAssembly Include="SkiaSharp" />
     <TrimmerRootAssembly Include="System.CommandLine" />
