@@ -44,7 +44,6 @@
     <TrimmerRootAssembly Include="Avalonia.Markup" />
     <TrimmerRootAssembly Include="Avalonia.Skia" />
     <TrimmerRootAssembly Include="SkiaSharp" />
-    <TrimmerRootAssembly Include="System.CommandLine" />
   </ItemGroup>
 
   <ItemGroup>
