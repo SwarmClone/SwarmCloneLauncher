@@ -61,7 +61,19 @@ jobs:
       - name: Restore NuGet packages
         run: dotnet restore "${{ env.PROJECT_PATH }}" -r ${{ matrix.rid }}
 
-      - name: Publish .NET project (Native AOT)
+      - name: Publish .NET project (Native AOT) Linux
+        if: runner.os == 'Linux'
+        run: |
+          dotnet publish "${{ env.PROJECT_PATH }}" \
+            -c Release \
+            -r ${{ matrix.rid }} \
+            -p:DebugSymbols=false \
+            -p:DebugType=None \
+            -p:EnableCompressionInSingleFile=true \
+            --self-contained true \
+            -o "launcher"
+      - name: Publish .NET project (Native AOT) Windows
+        if: runner.os == 'windows'
         run: |
           dotnet publish "${{ env.PROJECT_PATH }}" `
             -c Release `
@@ -71,7 +83,6 @@ jobs:
             -p:EnableCompressionInSingleFile=true `
             --self-contained true `
             -o "launcher"
-
       - name: Check if executable exists (Linux)
         if: runner.os == 'Linux'
         run: |
