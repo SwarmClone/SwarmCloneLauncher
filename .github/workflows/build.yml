@@ -63,13 +63,13 @@ jobs:
 
       - name: Publish .NET project (Native AOT)
         run: |
-          dotnet publish "${{ env.PROJECT_PATH }}" \
-            -c Release \
-            -r ${{ matrix.rid }} \
-            -p:DebugSymbols=false \
-            -p:DebugType=None \
-            -p:EnableCompressionInSingleFile=true \
-            --self-contained true \
+          dotnet publish "${{ env.PROJECT_PATH }}" `
+            -c Release `
+            -r ${{ matrix.rid }} `
+            -p:DebugSymbols=false `
+            -p:DebugType=None `
+            -p:EnableCompressionInSingleFile=true `
+            --self-contained true `
             -o "launcher"
 
       - name: Check if executable exists (Linux)
