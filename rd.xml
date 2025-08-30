@@ -1,0 +1,43 @@
+<Directives xmlns="http://schemas.microsoft.com/netfx/2013/01/metadata">
+  <Application>
+    <Assembly Name="Avalonia.Themes.Default" Dynamic="Required All" />
+    <Assembly Name="Avalonia.Themes.Fluent" Dynamic="Required All" />
+    <Assembly Name="Avalonia.Controls" Dynamic="Required All" />
+    <Assembly Name="Avalonia.Base" Dynamic="Required All" />
+    <Assembly Name="Avalonia.Styling" Dynamic="Required All" />
+    <Assembly Name="Avalonia.Markup" Dynamic="Required All" />
+    <Assembly Name="Avalonia.Input" Dynamic="Required All" />
+    <Assembly Name="Avalonia.Interactivity" Dynamic="Required All" />
+    <Assembly Name="Avalonia.Animation" Dynamic="Required All" />
+    <Assembly Name="Avalonia.Visuals" Dynamic="Required All" />
+    <Assembly Name="Avalonia.Media" Dynamic="Required All" />
+    <Assembly Name="Avalonia.Skia" Dynamic="Required All" />
+    <Assembly Name="SkiaSharp" Dynamic="Required All" />
+    
+    <!-- 保留 CommunityToolkit.Mvvm 相关类型 -->
+    <Assembly Name="CommunityToolkit.Mvvm" Dynamic="Required All" />
+    
+    <!-- 保留应用程序自身的程序集 -->
+    <Assembly Name="SwarmCloneLauncher" Dynamic="Required All">
+      <!-- 保留所有类型 -->
+      <Type Name="*" Dynamic="Required All" />
+    </Assembly>
+    
+    <!-- 保留特定类型和方法 -->
+    <Type Name="Avalonia.Markup.Xaml.XamlLoader" Dynamic="Required All">
+      <Method Name="Load" Dynamic="Required" />
+    </Type>
+    
+    <!-- 保留样式和主题相关的类型 -->
+    <Type Name="Avalonia.Styling.Styles" Dynamic="Required All" />
+    <Type Name="Avalonia.Styling.Style" Dynamic="Required All" />
+    <Type Name="Avalonia.Styling.Setter" Dynamic="Required All" />
+    
+    <!-- 保留控件相关的类型 -->
+    <Type Name="Avalonia.Controls.Window" Dynamic="Required All" />
+    <Type Name="Avalonia.Controls.Button" Dynamic="Required All" />
+    <Type Name="Avalonia.Controls.TextBox" Dynamic="Required All" />
+    <Type Name="Avalonia.Controls.TextBlock" Dynamic="Required All" />
+ 
+  </Application>
+</Directives>

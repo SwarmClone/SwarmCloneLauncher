@@ -61,13 +61,16 @@ jobs:
       - name: Restore NuGet packages
         run: dotnet restore "${{ env.PROJECT_PATH }}" -r ${{ matrix.rid }}
 
-      - name: Publish .NET project (Framework-dependent)
-        run: >
-          dotnet publish "${{ env.PROJECT_PATH }}"
-          -c Release
-          -r ${{ matrix.rid }}
-          -p:DebugSymbols=false
-          -o "launcher"
+      - name: Publish .NET project (Native AOT)
+        run: |
+          dotnet publish "${{ env.PROJECT_PATH }}" \
+            -c Release \
+            -r ${{ matrix.rid }} \
+            -p:DebugSymbols=false \
+            -p:DebugType=None \
+            -p:EnableCompressionInSingleFile=true \
+            --self-contained true \
+            -o "launcher"
 
       - name: Create final package (Windows)
         if: runner.os == 'Windows'
@@ -77,7 +80,10 @@ jobs:
           Copy-Item launch.exe -Destination final/
           
           New-Item -ItemType Directory -Force -Path final/launcher
-          Copy-Item "launcher/*" -Recurse -Destination final/launcher/"
+          Copy-Item "launcher/*" -Recurse -Destination final/launcher/
+          
+          cd final
+          7z a "../${{ matrix.rid }}.zip" ./*
 
       - name: Create final package (Linux)
         if: runner.os == 'Linux'
