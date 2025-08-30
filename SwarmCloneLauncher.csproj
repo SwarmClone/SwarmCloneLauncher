@@ -38,7 +38,6 @@
 
   <ItemGroup>
     <!-- 指示 AOT 编译器保留以下程序集 -->
-    <TrimmerRootAssembly Include="Avalonia.Themes.Default" />
     <TrimmerRootAssembly Include="Avalonia.Themes.Fluent" />
     <TrimmerRootAssembly Include="Avalonia.Controls" />
     <TrimmerRootAssembly Include="Avalonia.Base" />
